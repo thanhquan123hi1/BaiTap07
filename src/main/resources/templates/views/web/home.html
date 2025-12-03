@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/user}">
+<head>
+    <title>Trang chủ</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <!-- Hero Section -->
+    <div class="bg-primary text-white rounded-4 p-5 mb-5" 
+         style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="display-4 fw-bold mb-3">
+                    <i class="bi bi-play-circle-fill"></i> Chào mừng đến BT6 Video
+                </h1>
+                <p class="lead mb-4">
+                    Khám phá hàng ngàn video chất lượng cao, được phân loại theo danh mục rõ ràng. 
+                    Tìm kiếm và xem video yêu thích của bạn ngay hôm nay!
+                </p>
+                <a th:href="@{/videos}" class="btn btn-light btn-lg">
+                    <i class="bi bi-collection-play"></i> Xem tất cả video
+                </a>
+            </div>
+            <div class="col-md-4 text-center">
+                <i class="bi bi-play-btn" style="font-size: 8rem; opacity: 0.7;"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Categories Section -->
+    <section class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3><i class="bi bi-folder"></i> Danh mục phổ biến</h3>
+            <a th:href="@{/categories}" class="btn btn-outline-primary">
+                Xem tất cả <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-3 col-sm-6" th:each="c : ${categories}" th:if="${#lists.size(categories) <= 8 or cStat.index < 8}">
+                <a th:href="@{'/category/' + ${c.categoryId}}" class="text-decoration-none">
+                    <div class="card h-100 border-0 shadow-sm video-card">
+                        <div class="card-body text-center">
+                            <img th:if="${c.images != null}" 
+                                 th:src="@{'/upload/category/' + ${c.images}}"
+                                 onerror="this.src='https://via.placeholder.com/100'"
+                                 alt="category" class="mb-3" style="height:80px; border-radius:10px;">
+                            <div th:unless="${c.images != null}" class="mb-3">
+                                <i class="bi bi-folder-fill text-primary" style="font-size: 3rem;"></i>
+                            </div>
+                            <h5 class="card-title text-dark" th:text="${c.categoryName}">Category Name</h5>
+                            <span class="badge bg-secondary" 
+                                  th:text="${c.videos != null ? #lists.size(c.videos) : 0} + ' videos'">0 videos</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Latest Videos Section -->
+    <section>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3><i class="bi bi-film"></i> Video mới nhất</h3>
+            <a th:href="@{/videos}" class="btn btn-outline-primary">
+                Xem tất cả <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-4 col-sm-6" th:each="v : ${videos}">
+                <a th:href="@{'/video/' + ${v.videoId}}" class="text-decoration-none">
+                    <div class="card h-100 border-0 shadow-sm video-card">
+                        <div class="position-relative">
+                            <img th:if="${v.poster != null}" 
+                                 th:src="@{'/upload/video/' + ${v.poster}}"
+                                 onerror="this.src='https://via.placeholder.com/300x180'"
+                                 class="card-img-top" alt="poster" style="height:160px; object-fit:cover;">
+                            <img th:unless="${v.poster != null}"
+                                 src="https://via.placeholder.com/300x180"
+                                 class="card-img-top" alt="poster" style="height:160px; object-fit:cover;">
+                            <span class="position-absolute bottom-0 end-0 m-2 badge bg-dark">
+                                <i class="bi bi-eye"></i> <span th:text="${v.views}">0</span>
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <h6 class="card-title text-dark mb-2" th:text="${v.title}">Video Title</h6>
+                            <small class="text-muted" th:if="${v.category != null}">
+                                <i class="bi bi-folder"></i> 
+                                <span th:text="${v.category.categoryName}">Category</span>
+                            </small>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div th:if="${#lists.isEmpty(videos)}" class="col-12">
+                <div class="alert alert-info text-center">
+                    <i class="bi bi-info-circle"></i> Chưa có video nào.
+                </div>
+            </div>
+        </div>
+    </section>
+</section>
+</body>
+</html>

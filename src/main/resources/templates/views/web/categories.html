@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/user}">
+<head>
+    <title>Danh mục</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3><i class="bi bi-folder"></i> Tất cả danh mục</h3>
+    </div>
+
+    <!-- Categories Grid -->
+    <div class="row g-4">
+        <div class="col-lg-3 col-md-4 col-sm-6" th:each="c : ${categories}">
+            <a th:href="@{'/category/' + ${c.categoryId}}" class="text-decoration-none">
+                <div class="card h-100 border-0 shadow-sm video-card">
+                    <div class="card-body text-center py-4">
+                        <img th:if="${c.images != null}" 
+                             th:src="@{'/upload/category/' + ${c.images}}"
+                             onerror="this.src='https://via.placeholder.com/100'"
+                             alt="category" class="mb-3" style="height:100px; border-radius:10px;">
+                        <div th:unless="${c.images != null}" class="mb-3">
+                            <i class="bi bi-folder-fill text-primary" style="font-size: 4rem;"></i>
+                        </div>
+                        <h5 class="card-title text-dark" th:text="${c.categoryName}">Category Name</h5>
+                        <p class="text-muted mb-2" th:if="${c.categoryCode != null}">
+                            Mã: <span th:text="${c.categoryCode}">Code</span>
+                        </p>
+                        <span class="badge" 
+                              th:classappend="${c.status == 1} ? 'bg-success' : 'bg-secondary'"
+                              th:text="${c.videos != null ? #lists.size(c.videos) : 0} + ' videos'">0 videos</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div th:if="${#lists.isEmpty(categories)}" class="col-12">
+            <div class="alert alert-info text-center">
+                <i class="bi bi-info-circle"></i> Chưa có danh mục nào.
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

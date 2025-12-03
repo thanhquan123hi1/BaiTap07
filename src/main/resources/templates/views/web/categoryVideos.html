@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/user}">
+<head>
+    <title th:text="${category.categoryName}">Video theo danh mục</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <!-- Category Header -->
+    <div class="card border-0 shadow-sm mb-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <div class="card-body text-white py-4">
+            <div class="row align-items-center">
+                <div class="col-auto">
+                    <img th:if="${category.images != null}" 
+                         th:src="@{'/upload/category/' + ${category.images}}"
+                         onerror="this.src='https://via.placeholder.com/80'"
+                         alt="category" style="height:80px; border-radius:10px; border:3px solid white;">
+                    <div th:unless="${category.images != null}">
+                        <i class="bi bi-folder-fill" style="font-size: 4rem;"></i>
+                    </div>
+                </div>
+                <div class="col">
+                    <h3 class="mb-1" th:text="${category.categoryName}">Category Name</h3>
+                    <p class="mb-0 opacity-75" th:if="${category.categoryCode != null}">
+                        Mã danh mục: <span th:text="${category.categoryCode}">Code</span>
+                    </p>
+                    <span class="badge bg-light text-dark mt-2" 
+                          th:text="${totalItems} + ' video'">0 videos</span>
+                </div>
+                <div class="col-auto">
+                    <a th:href="@{/categories}" class="btn btn-outline-light">
+                        <i class="bi bi-arrow-left"></i> Quay lại
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Video Grid -->
+    <div class="row g-4">
+        <div class="col-lg-3 col-md-4 col-sm-6" th:each="v : ${videos}">
+            <a th:href="@{'/video/' + ${v.videoId}}" class="text-decoration-none">
+                <div class="card h-100 border-0 shadow-sm video-card">
+                    <div class="position-relative">
+                        <img th:if="${v.poster != null}" 
+                             th:src="@{'/upload/video/' + ${v.poster}}"
+                             onerror="this.src='https://via.placeholder.com/300x180'"
+                             class="card-img-top" alt="poster" style="height:160px; object-fit:cover;">
+                        <img th:unless="${v.poster != null}"
+                             src="https://via.placeholder.com/300x180"
+                             class="card-img-top" alt="poster" style="height:160px; object-fit:cover;">
+                        <span class="position-absolute bottom-0 end-0 m-2 badge bg-dark">
+                            <i class="bi bi-eye"></i> <span th:text="${v.views}">0</span>
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-title text-dark mb-0" th:text="${v.title}">Video Title</h6>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div th:if="${#lists.isEmpty(videos)}" class="col-12">
+            <div class="alert alert-info text-center">
+                <i class="bi bi-info-circle"></i> Không có video nào trong danh mục này.
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="d-flex justify-content-center mt-4" th:if="${totalPages > 1}">
+        <nav>
+            <ul class="pagination mb-0">
+                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                    <a class="page-link" 
+                       th:href="@{'/category/' + ${category.categoryId}(page=${currentPage - 1}, size=${size})}">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+                
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                    th:classappend="${i == currentPage} ? 'active'">
+                    <a class="page-link" 
+                       th:href="@{'/category/' + ${category.categoryId}(page=${i}, size=${size})}"
+                       th:text="${i + 1}">1</a>
+                </li>
+                
+                <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                    <a class="page-link" 
+                       th:href="@{'/category/' + ${category.categoryId}(page=${currentPage + 1}, size=${size})}">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</section>
+</body>
+</html>

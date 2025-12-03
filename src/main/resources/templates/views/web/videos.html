@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/user}">
+<head>
+    <title>Tất cả video</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3><i class="bi bi-film"></i> Tất cả video</h3>
+    </div>
+
+    <!-- Form tìm kiếm -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form class="row g-3" th:action="@{/videos}" method="get">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input type="text" class="form-control" name="keyword" 
+                               placeholder="Tìm kiếm video..."
+                               th:value="${keyword}">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <select class="form-select" name="size">
+                        <option value="12" th:selected="${size == 12}">12 / trang</option>
+                        <option value="24" th:selected="${size == 24}">24 / trang</option>
+                        <option value="48" th:selected="${size == 48}">48 / trang</option>
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-primary" type="submit">
+                        <i class="bi bi-search"></i> Tìm
+                    </button>
+                    <a th:href="@{/videos}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-clockwise"></i> Reset
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Video Grid -->
+    <div class="row g-4">
+        <div class="col-lg-3 col-md-4 col-sm-6" th:each="v : ${videos}">
+            <a th:href="@{'/video/' + ${v.videoId}}" class="text-decoration-none">
+                <div class="card h-100 border-0 shadow-sm video-card">
+                    <div class="position-relative">
+                        <img th:if="${v.poster != null}" 
+                             th:src="@{'/upload/video/' + ${v.poster}}"
+                             onerror="this.src='https://via.placeholder.com/300x180'"
+                             class="card-img-top" alt="poster" style="height:160px; object-fit:cover;">
+                        <img th:unless="${v.poster != null}"
+                             src="https://via.placeholder.com/300x180"
+                             class="card-img-top" alt="poster" style="height:160px; object-fit:cover;">
+                        <span class="position-absolute bottom-0 end-0 m-2 badge bg-dark">
+                            <i class="bi bi-eye"></i> <span th:text="${v.views}">0</span>
+                        </span>
+                        <span th:unless="${v.active}" class="position-absolute top-0 start-0 m-2 badge bg-danger">
+                            Inactive
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-title text-dark mb-2" th:text="${v.title}">Video Title</h6>
+                        <small class="text-muted" th:if="${v.category != null}">
+                            <i class="bi bi-folder"></i> 
+                            <span th:text="${v.category.categoryName}">Category</span>
+                        </small>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div th:if="${#lists.isEmpty(videos)}" class="col-12">
+            <div class="alert alert-info text-center">
+                <i class="bi bi-info-circle"></i> Không tìm thấy video nào.
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="d-flex justify-content-between align-items-center mt-4" th:if="${totalPages > 0}">
+        <div>
+            <span class="text-muted">
+                Hiển thị <strong th:text="${#lists.size(videos)}">0</strong> / 
+                <strong th:text="${totalItems}">0</strong> video
+            </span>
+        </div>
+
+        <nav th:if="${totalPages > 1}">
+            <ul class="pagination mb-0">
+                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                    <a class="page-link" 
+                       th:href="@{/videos(page=${currentPage - 1}, size=${size}, keyword=${keyword})}">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+                
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                    th:if="${i >= currentPage - 2 and i <= currentPage + 2}"
+                    th:classappend="${i == currentPage} ? 'active'">
+                    <a class="page-link" 
+                       th:href="@{/videos(page=${i}, size=${size}, keyword=${keyword})}"
+                       th:text="${i + 1}">1</a>
+                </li>
+                
+                <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                    <a class="page-link" 
+                       th:href="@{/videos(page=${currentPage + 1}, size=${size}, keyword=${keyword})}">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</section>
+</body>
+</html>
