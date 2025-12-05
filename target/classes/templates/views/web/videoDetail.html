@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/user}">
+<head>
+    <title th:text="${video.title}">Chi tiết video</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Video Player -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="ratio ratio-16x9 bg-dark rounded-top">
+                    <img th:if="${video.poster != null}" 
+                         th:src="@{'/upload/video/' + ${video.poster}}"
+                         onerror="this.src='https://via.placeholder.com/800x450'"
+                         alt="poster" class="img-fluid" style="object-fit:contain;">
+                    <img th:unless="${video.poster != null}"
+                         src="https://via.placeholder.com/800x450"
+                         alt="poster" class="img-fluid">
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title" th:text="${video.title}">Video Title</h4>
+                    <div class="d-flex gap-3 text-muted mb-3">
+                        <span><i class="bi bi-eye"></i> <span th:text="${video.views}">0</span> lượt xem</span>
+                        <span th:if="${video.category != null}">
+                            <i class="bi bi-folder"></i> 
+                            <a th:href="@{'/category/' + ${video.category.categoryId}}" class="text-decoration-none">
+                                <span th:text="${video.category.categoryName}">Category</span>
+                            </a>
+                        </span>
+                        <span>
+                            <i class="bi bi-hash"></i> <span th:text="${video.videoId}">ID</span>
+                        </span>
+                    </div>
+                    
+                    <hr>
+                    
+                    <h6>Mô tả</h6>
+                    <p th:if="${video.description != null}" th:text="${video.description}" class="text-muted">
+                        Mô tả video
+                    </p>
+                    <p th:unless="${video.description != null}" class="text-muted fst-italic">
+                        Không có mô tả
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Related Videos -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0"><i class="bi bi-collection-play"></i> Video liên quan</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <a th:each="rv : ${relatedVideos}" 
+                           th:href="@{'/video/' + ${rv.videoId}}"
+                           class="list-group-item list-group-item-action d-flex gap-3 py-3">
+                            <img th:if="${rv.poster != null}" 
+                                 th:src="@{'/upload/video/' + ${rv.poster}}"
+                                 onerror="this.src='https://via.placeholder.com/120x70'"
+                                 alt="poster" style="width:120px; height:70px; object-fit:cover; border-radius:5px;">
+                            <img th:unless="${rv.poster != null}"
+                                 src="https://via.placeholder.com/120x70"
+                                 alt="poster" style="width:120px; height:70px; object-fit:cover; border-radius:5px;">
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1" th:text="${rv.title}">Title</h6>
+                                <small class="text-muted">
+                                    <i class="bi bi-eye"></i> <span th:text="${rv.views}">0</span> lượt xem
+                                </small>
+                            </div>
+                        </a>
+                    </div>
+                    <div th:if="${#lists.isEmpty(relatedVideos)}" class="p-4 text-center text-muted">
+                        <i class="bi bi-film"></i> Không có video liên quan
+                    </div>
+                </div>
+            </div>
+
+            <!-- Back button -->
+            <div class="mt-3">
+                <a th:href="@{/videos}" class="btn btn-outline-primary w-100">
+                    <i class="bi bi-arrow-left"></i> Quay lại danh sách
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

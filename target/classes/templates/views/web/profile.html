@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/user}">
+<head>
+    <title>Profile</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <h3 class="mb-3">Thông tin cá nhân</h3>
+
+    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <div class="row">
+        <div class="col-md-4 text-center mb-3">
+            <img th:if="${user.images != null}"
+                 th:src="@{'/upload/user/' + ${user.images}}"
+                 alt="avatar" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+            <div th:if="${user.images == null}" class="border rounded-circle d-inline-flex
+                        align-items-center justify-content-center mb-3"
+                 style="width: 150px; height: 150px;">
+                <span class="fs-1">?</span>
+            </div>
+            <p class="fw-bold" th:text="${user.username}">username</p>
+        </div>
+
+        <div class="col-md-8">
+            <form th:action="@{/admin/profile}" method="post" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label class="form-label">Họ tên</label>
+                    <input type="text" class="form-control" name="fullname" th:value="${user.fullname}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Số điện thoại</label>
+                    <input type="text" class="form-control" name="phone" th:value="${user.phone}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" name="email" th:value="${user.email}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Ảnh đại diện</label>
+                    <input type="file" class="form-control" name="images">
+                </div>
+                <button class="btn btn-primary" type="submit">Cập nhật</button>
+            </form>
+        </div>
+    </div>
+</section>
+</body>
+</html>
+
+

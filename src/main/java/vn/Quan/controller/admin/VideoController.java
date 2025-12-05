@@ -71,6 +71,14 @@ public class VideoController {
         return "views/admin/videos/list";
     }
 
+    // Trang quản lý video với AJAX
+    @GetMapping("/ajax")
+    public String listAjax(ModelMap model) {
+        // Chỉ cần load categories cho dropdown
+        model.addAttribute("categories", categoryService.findAll());
+        return "views/admin/videos/list-ajax";
+    }
+
     // Form Thêm mới
     @GetMapping("/add")
     public String add(ModelMap model) {
