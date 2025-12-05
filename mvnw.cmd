@@ -16,7 +16,7 @@
 @REM KIND, either express or implied.  See the License for the
 @REM specific language governing permissions and limitations
 @REM under the License.
-@REM ----------------------------------------------------------------------------
+@REM ----------------------------------------------------------------------------_
 
 @REM ----------------------------------------------------------------------------
 @REM Apache Maven Wrapper startup batch script, version 3.3.4
@@ -185,5 +185,4 @@ try {
   try { Remove-Item $TMP_DOWNLOAD_DIR -Recurse -Force | Out-Null }
   catch { Write-Warning "Cannot remove $TMP_DOWNLOAD_DIR" }
 }
-
 Write-Output "MVN_CMD=$MAVEN_HOME/bin/$MVN_CMD"
